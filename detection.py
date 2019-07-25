@@ -3,7 +3,6 @@ import cv2
 import time
 import random
 import numpy as np
-import pandas as pd
 from cv2 import dnn
 from pytesseract import image_to_string
 
