@@ -1,5 +1,5 @@
-# License-Plate-Detection
-Malaysia License Plate Detection Using Tesseract-OCR
+# License-Plate-Recognition
+Malaysia License Plate Recognition Using MobileNetSSD and Tesseract-OCR
 
 ## Requirements
 - opencv
