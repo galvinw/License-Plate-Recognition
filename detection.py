@@ -65,12 +65,14 @@ def detect(cpp):
             taxi = process_img(crop_img)
 
             if taxi:
-                text = image_to_string(crop_img)
+                text = image_to_string(crop_img, config=config)
             else:
-                text = image_to_string(cv2.bitwise_not(crop_img))
+                text = image_to_string(cv2.bitwise_not(crop_img), config=config)
 
             result = process_text(text)
 
+            if len(result) <= 3:
+                return 'No License Plate Found'
     return result
 
 def process_img(image):
@@ -105,6 +107,7 @@ char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
         'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
         'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', '0']
+config = ("-l eng --oem 1 --psm 7")
 
 for f in os.listdir(test_dir):
     number = detect(test_dir + f)
