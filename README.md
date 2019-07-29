@@ -10,7 +10,7 @@ Malaysia License Plate Recognition Using MobileNetSSD and Tesseract-OCR
 ### Run `pip install -r requirements.txt` to install required packages.
 
 ### Tesseract
-- Please refer [here](https://github.com/tesseract-ocr/tesseract/wiki/Compiling#linux) to install tessearct in your system.
+- Please refer [here](https://github.com/tesseract-ocr/tesseract/wiki/Compiling#linux) to install tesseract in your system.
 
 ## Test Images
 Download the image folder from [here](https://drive.google.com/open?id=1bh4BrMrvkz31j66A5XJs17V7U6TWwEfz) and place it in the same folder.
