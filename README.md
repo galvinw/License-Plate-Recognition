@@ -5,6 +5,7 @@ Malaysia License Plate Recognition Using MobileNetSSD and Tesseract-OCR
 - opencv
 - pytesseract
 - numpy
+- matplotlib
 - tesseract version 4.0 or above (with [eng.trainneddata](https://github.com/tesseract-ocr/tessdata_best/blob/master/eng.traineddata))
 
 ### Run `pip install -r requirements.txt` to install required packages.
