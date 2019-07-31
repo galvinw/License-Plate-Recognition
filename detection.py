@@ -16,7 +16,7 @@ classNames = ('background','plate')
 net = dnn.readNetFromCaffe("MobileNetSSD_test.prototxt","lpr.caffemodel")
 
 def detect(cpp):
-    global result
+    global result, taxi
     frame = cv2.imread(cpp)
     blob = dnn.blobFromImage(frame, inScaleFactor, (inWidth, inHeight), meanVal)
     net.setInput(blob)
@@ -61,39 +61,46 @@ def detect(cpp):
                 yLeftBottom = 0
 
             crop_img = frame[yLeftBottom:yRightTop,xLeftBottom:xRightTop]
-            # cv2.imshow(cpp, crop_img)
-            taxi = process_img(crop_img)
+            taxi, wimg = bincount_app(crop_img)
+            # cv2.imshow(cpp, wimg)
 
             if taxi:
-                text = image_to_string(crop_img, config=config)
+                text = image_to_string(wimg, config=config)
             else:
-                text = image_to_string(cv2.bitwise_not(crop_img), config=config)
+                text = image_to_string(cv2.bitwise_not(wimg), config=config)
 
             result = process_text(text)
 
             if len(result) <= 3:
-                return 'No License Plate Found'
-    return result
+                result = 'No License Plate Found'
 
-def process_img(image):
-    rgb = bincount_app(image)
-    taxi = check_if_its_taxi(rgb)
-    return taxi
+    return result, taxi
 
-def bincount_app(a):
-    a2D = a.reshape(-1,a.shape[-1])
-    col_range = (256, 256, 256) # generically : a2D.max(0)+1
-    a1D = np.ravel_multi_index(a2D.T, col_range)
-    return np.unravel_index(np.bincount(a1D).argmax(), col_range)
+def bincount_app(img):
+    histr = np.bincount(img.ravel(),minlength=256)
+    taxi = check_if_its_taxi(histr)
+    wider_img = add_border(img)
+    return taxi, wider_img
 
-def check_if_its_taxi(rgb):
-    v = 0
-    for p in rgb:
-        v += p
-    if v/3 > 150:
+def check_if_its_taxi(histr):
+    v1 = 0
+    v2 = 0
+    for i in range(0, 101):
+        v1 += histr[i]
+    for j in range(100, 256):
+        v2 += histr[j]
+    if v2 > v1:
         return True
     else:
         return False
+
+def add_border(img):
+    top = int(0.05 * img.shape[0])  # shape[0] = rows
+    bottom = top
+    left = int(0.05 * img.shape[1])  # shape[1] = cols
+    right = left
+    dst = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_REPLICATE, None)
+    return dst
 
 def process_text(text):
     L = list(text)
@@ -110,8 +117,8 @@ char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
 config = ("-l eng --oem 1 --psm 7")
 
 for f in os.listdir(test_dir):
-    number = detect(test_dir + f)
-    print('True: ' + f + ' Result: ' + number)
+    number, taxi = detect(test_dir + f)
+    print('Filename: ' + f + ' Result: ' + number + ' Taxi: ' + str(taxi))
 
-if cv2.waitKey(0) == 27:
-    cv2.destroyAllWindows()
+# if cv2.waitKey(0) == 27:
+#     cv2.destroyAllWindows()
