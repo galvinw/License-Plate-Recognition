@@ -120,7 +120,11 @@ class CarDetector(object):
               idx_vec = [i for i, v in enumerate(cls) if (((v==3) or (v==4) or (v==6) or (v==8)) and (scores[i]>0.3))]
 
               if len(idx_vec) == 0:
+<<<<<<< HEAD
                   print('no detection!')
+=======
+                  # print('no detection!')
+>>>>>>> tanyinghui/master
                   self.car_boxes = []
               else:
                   tmp_car_boxes=[]
@@ -135,8 +139,13 @@ class CarDetector(object):
                           tmp_car_boxes.append(box)
                           print(box, ', confidence: ', scores[idx], 'ratio:', ratio)
 
+<<<<<<< HEAD
                       else:
                           print('wrong ratio or wrong size, ', box, ', confidence: ', scores[idx], 'ratio:', ratio)
+=======
+                      # else:
+                      #     print('wrong ratio or wrong size, ', box, ', confidence: ', scores[idx], 'ratio:', ratio)
+>>>>>>> tanyinghui/master
 
                   self.car_boxes = tmp_car_boxes
 
