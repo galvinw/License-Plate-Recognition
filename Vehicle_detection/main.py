@@ -13,8 +13,7 @@ max_age = 4  # no.of consecutive unmatched detection before
 min_hits = 1  # no. of consecutive matches needed to establish a track
 
 tracker_list =[] # list for trackers
-# list for track ID
-track_id_list= deque(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'])
+id = 0
 
 def assign_detections_to_trackers(trackers, detections, iou_thrd = 0.3):
     '''
@@ -69,7 +68,7 @@ def pipeline(img):
     global tracker_list
     global max_age
     global min_hits
-    global track_id_list
+    global id
 
     img_dim = (img.shape[1], img.shape[0])
     z_box = det.get_localization(img) # measurement
@@ -110,7 +109,8 @@ def pipeline(img):
             xx = xx.T[0].tolist()
             xx =[xx[0], xx[2], xx[4], xx[6]]
             tmp_trk.box = xx
-            tmp_trk.id = track_id_list.popleft() # assign an ID for the tracker
+            id += 1
+            tmp_trk.id = id # assign an ID for the tracker
             tracker_list.append(tmp_trk)
             x_box.append(xx)
 
@@ -133,13 +133,12 @@ def pipeline(img):
         if ((trk.hits >= min_hits) and (trk.no_losses <= max_age)):
              good_tracker_list.append(trk)
              x_cv2 = trk.box
-             img = helpers.draw_box_label(img, x_cv2) # Draw the bounding boxes on the
+             left, top, right, bottom = x_cv2[1], x_cv2[0], x_cv2[3], x_cv2[2]
+             car = img[top:bottom, left:right]
+             img = helpers.draw_box_label(img, trk.id, x_cv2) # Draw the bounding boxes on the
                                                      # images
     # Book keeping
     deleted_tracks = filter(lambda x: x.no_losses > max_age, tracker_list)
-
-    for trk in deleted_tracks:
-            track_id_list.append(trk.id)
 
     tracker_list = [x for x in tracker_list if x.no_losses <= max_age]
 
@@ -154,7 +153,7 @@ if __name__ == "__main__":
         img = pipeline(frame)
         cv2.imshow('frame', img)
 
-        if cv2.waitKey(1) == 27:
+        if cv2.waitKey(10) == 27:
             break
 
     cap.release()

@@ -62,7 +62,10 @@ def detect(cpp):
 
             crop_img = frame[yLeftBottom:yRightTop,xLeftBottom:xRightTop]
             taxi, wimg = bincount_app(crop_img)
-            # cv2.imshow(cpp, wimg)
+            cv2.imshow(cpp, wimg)
+
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
             if taxi:
                 text = image_to_string(wimg, config=config)
@@ -114,7 +117,7 @@ char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
         'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
         'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', '0']
-config = ("-l eng --oem 1 --psm 7")
+config = ("--oem 1 --psm 11")
 
 for f in os.listdir(test_dir):
     number, taxi = detect(test_dir + f)
